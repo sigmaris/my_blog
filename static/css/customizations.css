@@ -1,0 +1,7 @@
+@media (max-width: 52em) {
+  article.single section,
+  .article-list article {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
