@@ -1,0 +1,4 @@
+baseURL = "http://sigmaris.info/blog/"
+languageCode = "en-us"
+title = "sigmaris.info"
+theme = "base16"
