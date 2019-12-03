@@ -39,8 +39,8 @@ In order to call the AWS APIs to obtain MFA-authenticated session credentials, w
 
 ## Step 5: Add function definitions to your shell startup file
 
- [1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html "Using Multi-Factor Authentication (MFA) in AWS"
- [2]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_configure-api-require.html "Configuring MFA-Protected API Access"
+ [1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html
+ [2]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_configure-api-require.html
  [3]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-mfa
  [4]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable_virtual.html
  [5]: https://www.yubico.com/products/services-software/download/yubico-authenticator/
