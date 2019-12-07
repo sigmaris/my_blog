@@ -75,6 +75,7 @@ Then, define a function that takes an MFA code as an argument, uses the AWS CLI 
             export AWS_SECURITY_TOKEN=$(echo $STS_CREDS | jq -r '.Credentials.SessionToken')
             export AWS_SESSION_TOKEN=$(echo $STS_CREDS | jq -r '.Credentials.SessionToken')
             export AWS_SESSION_EXPIRY=$(echo $STS_CREDS | jq -r '.Credentials.Expiration')
+            echo "Session credentials set, expires at $AWS_SESSION_EXPIRY"
         else
             echo "Error: Failed to obtain temporary credentials."
         fi
@@ -120,6 +121,7 @@ Similarly to obtaining temporary credentials for your IAM user, you can authenti
 
             export AWS_ASSUMED_ROLE_ID=$(echo $ASSUMED_ROLE_CREDS | jq -r '.AssumedRoleUser.AssumedRoleId')
             export AWS_ASSUMED_ROLE_ARN=$(echo $ASSUMED_ROLE_CREDS | jq -r '.AssumedRoleUser.Arn')
+            echo "Session credentials set, expires at $AWS_SESSION_EXPIRY"
         else
             echo "Error: Failed to obtain temporary role credentials."
         fi
@@ -130,7 +132,7 @@ Similarly to obtaining temporary credentials for your IAM user, you can authenti
         aws-assume-role-mfa 123456789012 MyMFARequiredRole $(aws-get-mfa-code)
     }
 
-This is useful if your AWS account is set up in a way that people's IAM users have restricted permissions, and they have to assume a role with MFA authentication to do privileged operations.
+This is useful if your AWS account is set up in a way that people's IAM users have restricted permissions, and they have to assume a different IAM role with MFA authentication to do privileged operations.
 
 # Notes
 
