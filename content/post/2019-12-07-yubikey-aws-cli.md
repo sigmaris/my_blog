@@ -2,8 +2,8 @@
 title: Making life easier with Yubikeys and the AWS CLI
 author: sigmaris
 type: post
-date: 2019-11-30T20:51:00+00:00
-url: /2019/11/yubikey-aws-cli/
+date: 2019-12-07T11:24:00+00:00
+url: /2019/12/yubikey-aws-cli/
 categories:
   - Uncategorized
 tags:
