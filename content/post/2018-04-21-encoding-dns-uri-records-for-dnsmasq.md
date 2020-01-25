@@ -20,7 +20,7 @@ Handily, dnsmasq also supports serving arbitrary DNS resource records using the 
 
 So, we need to encode the priority as 2 bytes, then the weight as 2 bytes, then the URI itself. We can use Python&#8217;s [struct][4] module for encoding the integers, and the [binascii][5] module to encode the strings as hex:
 
-```
+```python
 import binascii
 import struct
 record_name = b'_something.example.com'

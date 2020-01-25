@@ -77,7 +77,7 @@ Unfortunately while DD-WRT has basic IPv6 support, it doesn&#8217;t include the 
 
 Once all this is installed, another script is necessary to start and configure the firewall. I used the following:
 
-```
+```bash
 #!/bin/sh
 export IP6TABLES_LIB_DIR=/jffs/usr/lib/iptables
 export PATH=$PATH:/jffs/usr/sbin

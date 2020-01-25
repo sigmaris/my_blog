@@ -45,7 +45,9 @@ In order to call the AWS APIs to obtain MFA-authenticated session credentials, w
 
 Get a current 6-digit MFA code from the YubiKey, using `ykman oath code AWS`, and then run this command:
 
-    aws sts get-session-token --serial-number <MFA device ARN> --token-code <token code> --output json
+```bash
+aws sts get-session-token --serial-number <MFA device ARN> --token-code <token code> --output json
+```
 
 Replace `<MFA device ARN>` with your assigned MFA device ARN from step 1 above, and replace `<token code>` with the 6-digit code from the Yubikey. You should see a JSON object with AccessKeyId, SecretAccessKey and SessionToken keys.
 
@@ -55,51 +57,59 @@ Now let's add functions to the shell startup file to automate doing all of these
 
 First, define a function for getting an MFA code from the YubiKey:
 
-    function aws-get-mfa-code {
-        ykman oath code AWS 2>/dev/null | sed -E 's/(None:)?AWS[[:space:]]+([[:digit:]]+)/\2/'
-    }
+```bash
+function aws-get-mfa-code {
+    ykman oath code AWS 2>/dev/null | sed -E 's/(None:)?AWS[[:space:]]+([[:digit:]]+)/\2/'
+}
+```
 
 (If you've named the stored key something other than AWS, change that part in the above function)
 
 Then, define a function that takes an MFA code as an argument, uses the AWS CLI to get credentials for a temporary MFA-authenticated session, and sets environment variables with the credentials:
 
-    # Replace <MFA device ARN> here with your MFA device ARN from step 1
-    AWS_MFA_SERIAL="<MFA device ARN>"
+```bash
+# Replace <MFA device ARN> here with your MFA device ARN from step 1
+AWS_MFA_SERIAL="<MFA device ARN>"
 
-    function aws-mfa-session {
-        STS_CREDS=$(aws sts get-session-token --serial-number "$AWS_MFA_SERIAL" --token-code "$1" --output json)
-        if [ "$?" -eq "0" ]
-        then
-            export AWS_ACCESS_KEY_ID=$(echo $STS_CREDS | jq -r '.Credentials.AccessKeyId')
-            export AWS_SECRET_ACCESS_KEY=$(echo $STS_CREDS | jq -r '.Credentials.SecretAccessKey')
-            export AWS_SECURITY_TOKEN=$(echo $STS_CREDS | jq -r '.Credentials.SessionToken')
-            export AWS_SESSION_TOKEN=$(echo $STS_CREDS | jq -r '.Credentials.SessionToken')
-            export AWS_SESSION_EXPIRY=$(echo $STS_CREDS | jq -r '.Credentials.Expiration')
-            echo "Session credentials set, expires at $AWS_SESSION_EXPIRY"
-        else
-            echo "Error: Failed to obtain temporary credentials."
-        fi
-    }
+function aws-mfa-session {
+    STS_CREDS=$(aws sts get-session-token --serial-number "$AWS_MFA_SERIAL" --token-code "$1" --output json)
+    if [ "$?" -eq "0" ]
+    then
+        export AWS_ACCESS_KEY_ID=$(echo $STS_CREDS | jq -r '.Credentials.AccessKeyId')
+        export AWS_SECRET_ACCESS_KEY=$(echo $STS_CREDS | jq -r '.Credentials.SecretAccessKey')
+        export AWS_SECURITY_TOKEN=$(echo $STS_CREDS | jq -r '.Credentials.SessionToken')
+        export AWS_SESSION_TOKEN=$(echo $STS_CREDS | jq -r '.Credentials.SessionToken')
+        export AWS_SESSION_EXPIRY=$(echo $STS_CREDS | jq -r '.Credentials.Expiration')
+        echo "Session credentials set, expires at $AWS_SESSION_EXPIRY"
+    else
+        echo "Error: Failed to obtain temporary credentials."
+    fi
+}
+```
 
 The environment variables set here will be used by the AWS CLI and most AWS SDKs, in preference to the credentials saved on disk, so that means any subsequent AWS CLI commands or programs run in the shell session where these variables are set, will operate with those credentials.
 
 It's also useful to be able to remove all of these environment variables, for example when the temporary credentials expire and you need to start a new session from scratch, so let's define a function to do that:
 
-    function aws-reset-env {
-        unset AWS_ACCESS_KEY_ID
-        unset AWS_SECRET_ACCESS_KEY
-        unset AWS_SECURITY_TOKEN
-        unset AWS_SESSION_TOKEN
-        unset AWS_SESSION_EXPIRY
-        unset AWS_ASSUMED_ROLE_ID
-        unset AWS_ASSUMED_ROLE_ARN
-    }
+```bash
+function aws-reset-env {
+    unset AWS_ACCESS_KEY_ID
+    unset AWS_SECRET_ACCESS_KEY
+    unset AWS_SECURITY_TOKEN
+    unset AWS_SESSION_TOKEN
+    unset AWS_SESSION_EXPIRY
+    unset AWS_ASSUMED_ROLE_ID
+    unset AWS_ASSUMED_ROLE_ARN
+}
+```
 
 Finally, in the spirit of UNIX, let's chain functions together to create a single command, with no required arguments, to start an MFA-authenticated session.
 
-    function aws-yubi-session {
-        aws-mfa-session $(aws-get-mfa-code)
-    }
+```bash
+function aws-yubi-session {
+    aws-mfa-session $(aws-get-mfa-code)
+}
+```
 
 After saving these into your shell startup file, you need to start a new shell session (or `source` your .bashrc) to make these functions available.
 
@@ -107,30 +117,32 @@ After saving these into your shell startup file, you need to start a new shell s
 
 Similarly to obtaining temporary credentials for your IAM user, you can authenticate with MFA, assume a role in your current AWS account or in another account, and set environment variables with the role's temporary credentials all in one operation, with these additional functions:
 
-    # Usage: aws-assume-role-mfa <12-digit role account ID> <role name> <MFA code>
-    function aws-assume-role-mfa {
-        ASSUMED_ROLE_CREDS=$(aws sts assume-role --role-arn "arn:aws:iam::${1}:role/${2}" --role-session-name $(whoami)@$(hostname) --serial-number "$AWS_MFA_SERIAL" --token-code "$3" --output json)
+```bash
+# Usage: aws-assume-role-mfa <12-digit role account ID> <role name> <MFA code>
+function aws-assume-role-mfa {
+    ASSUMED_ROLE_CREDS=$(aws sts assume-role --role-arn "arn:aws:iam::${1}:role/${2}" --role-session-name $(whoami)@$(hostname) --serial-number "$AWS_MFA_SERIAL" --token-code "$3" --output json)
 
-        if [ "$?" -eq "0" ]
-        then
-            export AWS_ACCESS_KEY_ID=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.AccessKeyId')
-            export AWS_SECRET_ACCESS_KEY=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.SecretAccessKey')
-            export AWS_SESSION_TOKEN=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.SessionToken')
-            export AWS_SECURITY_TOKEN=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.SessionToken')
-            export AWS_SESSION_EXPIRY=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.Expiration')
+    if [ "$?" -eq "0" ]
+    then
+        export AWS_ACCESS_KEY_ID=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.AccessKeyId')
+        export AWS_SECRET_ACCESS_KEY=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.SecretAccessKey')
+        export AWS_SESSION_TOKEN=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.SessionToken')
+        export AWS_SECURITY_TOKEN=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.SessionToken')
+        export AWS_SESSION_EXPIRY=$(echo $ASSUMED_ROLE_CREDS | jq -r '.Credentials.Expiration')
 
-            export AWS_ASSUMED_ROLE_ID=$(echo $ASSUMED_ROLE_CREDS | jq -r '.AssumedRoleUser.AssumedRoleId')
-            export AWS_ASSUMED_ROLE_ARN=$(echo $ASSUMED_ROLE_CREDS | jq -r '.AssumedRoleUser.Arn')
-            echo "Session credentials set, expires at $AWS_SESSION_EXPIRY"
-        else
-            echo "Error: Failed to obtain temporary role credentials."
-        fi
-    }
+        export AWS_ASSUMED_ROLE_ID=$(echo $ASSUMED_ROLE_CREDS | jq -r '.AssumedRoleUser.AssumedRoleId')
+        export AWS_ASSUMED_ROLE_ARN=$(echo $ASSUMED_ROLE_CREDS | jq -r '.AssumedRoleUser.Arn')
+        echo "Session credentials set, expires at $AWS_SESSION_EXPIRY"
+    else
+        echo "Error: Failed to obtain temporary role credentials."
+    fi
+}
 
-    # Here's an example of how you'd then make a "shortcut" function to assume a role with YubiKey authentication
-    function aws-yubi-assumemyrole {
-        aws-assume-role-mfa 123456789012 MyMFARequiredRole $(aws-get-mfa-code)
-    }
+# Here's an example of how you'd then make a "shortcut" function to assume a role with YubiKey authentication
+function aws-yubi-assumemyrole {
+    aws-assume-role-mfa 123456789012 MyMFARequiredRole $(aws-get-mfa-code)
+}
+```
 
 This is useful if your AWS account is set up in a way that people's IAM users have restricted permissions, and they have to assume a different IAM role with MFA authentication to do privileged operations.
 
