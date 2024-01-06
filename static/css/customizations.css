@@ -1,4 +1,5 @@
 @media (max-width: 52em) {
+
   article.single section,
   .article-list article {
     padding-left: 2rem;
@@ -8,14 +9,24 @@
 
 @media (min-width: 92em) {
   .container {
-  	max-width: 82em
+    max-width: 82em
   }
+
   article.single div.highlight {
-  	max-width: 82em;
-  	width: 82em;
+    max-width: 82em;
+    width: 82em;
   }
 }
 
 div.highlight pre {
-	overflow: auto;
+  overflow: auto;
+}
+
+body {
+  font-family: Palatino, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+pre,
+code {
+  font-family: 'Source Code Pro', monospace;
 }
