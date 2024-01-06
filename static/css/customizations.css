@@ -30,3 +30,11 @@ pre,
 code {
   font-family: 'Source Code Pro', monospace;
 }
+
+article.single section.comments h1 { color: var(--base0d); }
+article.single section.comments h2 { color: var(--base0b); }
+article.single section.comments h3 { color: var(--base09); }
+article.single section.comments h4 { color: var(--base08); }
+article.single section.comments h5 { color: var(--base02); }
+article.single section.comments h6 { color: var(--base03); }
+article.single section.comments a { color: var(--base0f); }

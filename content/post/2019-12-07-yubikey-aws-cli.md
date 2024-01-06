@@ -8,6 +8,10 @@ categories:
   - Uncategorized
 tags:
   - aws
+comments:
+  host: sc.sigmaris.info
+  username: hughcb
+  id: 103266523087853251
 ---
 If you're working with Amazon Web Services, and want the highest level of security around usage of your AWS account, AWS recommends that you use IAM users instead of the account's root user, [set up Multi-Factor authentication][1] (MFA) on the IAM users, and then [require MFA for API operations][2]. Typically this requires the person performing operations on AWS to provide a one-time code when they authenticate to AWS, as well as their more permanent password (for the web console) or their Access Key (for the CLI and SDKs).
 

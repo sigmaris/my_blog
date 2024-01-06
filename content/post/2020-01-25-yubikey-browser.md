@@ -6,6 +6,10 @@ date: 2020-01-25T13:49:00+00:00
 url: /2020/01/yubikey-browser/
 categories:
   - mac
+comments:
+  host: sc.sigmaris.info
+  username: hughcb
+  id: 103550550142969400
 ---
 Following on from the post about AWS logins with Yubikey, I also wanted to share another helpful bit of code to automate typing [TOTP codes][1] from a Yubikey into web pages on macOS.
 
