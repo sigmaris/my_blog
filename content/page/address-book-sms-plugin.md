@@ -11,7 +11,9 @@ The latest version is v3, which has a few bugs fixed, in particular the one whic
 
 [Download][1], unzip and place the plugin in /Library/Address Book Plug-Ins/ and restart Address Book. You should then be able to click on a phone number on a person’s card and select “Send SMS via Bluetooth” to send them a SMS.
 
-<a href="/blog/uploads/2009/09/Screen-shot-2009-09-14-at-16.05.47.png"><img style="max-width: 100%; display: block; margin-left: auto; margin-right: auto; padding: 0px; border: initial none initial;" title="Screen shot of emitSMS Address Book plugin" src="/blog/uploads/2009/09/Screen-shot-2009-09-14-at-16.05.47-300x226.png" alt="Screen shot of emitSMS Address Book plugin" width="300" height="226" /></a>The <a title="emitSMS Address Book plugin source code" href="https://github.com/sigmaris/AddressBookSMS" target="_blank">source code</a> is also available, under the same MIT license as the original emitSMS source code.
+![Screen shot of emitSMS Address Book plugin](/blog/uploads/2009/09/Screen-shot-2009-09-14-at-16.05.47-300x226.png)
+
+The [source code][3] is also available, under the same MIT license as the original emitSMS source code.
 
 ### Notes
 
@@ -31,3 +33,4 @@ If the plugin doesn&#8217;t work with your phone, replace the installed version 
 
  [1]: /files/emitSMSAddressBookPlugin.bundle.zip "emitSMS Address Book plugin binary"
  [2]: /files/emitSMSAddressBookPlugin.bundle.debug.zip "emitSMS Address Book plugin debug version binary"
+ [3]: https://github.com/sigmaris/AddressBookSMS

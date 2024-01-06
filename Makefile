@@ -4,12 +4,18 @@ LAYOUTS := $(shell find layouts/ -type f)
 RESOURCES := $(shell find resources/ -type f)
 STATIC_FILES := $(shell find static/ -type f)
 
-.PHONY: upload
-upload: public
-	rsync --delete --recursive --progress public/ sigmaris.info:public_html/blog/
-
 public: $(CONTENT_FILES) $(DATA_FILES) $(LAYOUTS) $(RESOURCES) $(STATIC_FILES) config.toml
 	hugo
+
+.PHONY: upload
+upload: public
+	if [ -d /Volumes/p111.lithium.hosting/var/www/html/blog/ ]; then \
+		rsync --delete --recursive --progress public/ /Volumes/p111.lithium.hosting/var/www/html/blog/; \
+	else \
+		echo "Mount the WebDAV drive first."; \
+		exit 1; \
+	fi
+
 
 .PHONY: clean
 clean:

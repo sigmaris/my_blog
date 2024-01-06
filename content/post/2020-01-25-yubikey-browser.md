@@ -144,11 +144,7 @@ You can edit the `else if currentTabUrl starts with ...` series of conditions an
 
 ## Setting up the Trigger
 
-The Automator app in macOS can be used to set up a global keyboard hotkey for running this script. In Automator, create a new Quick Action and set it to receive "no input" in "any application". Add a "Run Shell Script" action, and enter this in the script, assuming your main shell script from above is saved at `~/bin/ykoath.sh`:
-
-```shell
-~/bin/ykoath.sh
-```
+The Automator app in macOS can be used to set up a global keyboard hotkey for running this script. In Automator, create a new Quick Action and set it to receive "no input" in "any application". Add a "Run Shell Script" action, and just enter `~/bin/ykoath.sh` in the script, assuming your main shell script from above is saved at that location.
 
 Save the Automator workflow, then go to System Settings (or Preferences in older macOS) > Keyboard > Shortcuts. Select Services from the sidebar and find your service. Add a keyboard shortcut by double clicking (none) on the right, and typing in your shortcut - I like to use one of the F13-F19 keys on the full-size Apple Keyboard.
 

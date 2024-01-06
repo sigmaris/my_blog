@@ -37,7 +37,7 @@ To do this you need to be running one of the DD-WRT builds with IPv6 support, I 
 ```
 insmod ipv6
 WANIP=$(nvram get wan_ipaddr);
-w<strong></strong>get -O - 'https://ipv4.tunnelbroker.net/ipv4_end.php?ipv4b=AUTO&user_id=(userid)&pass=(md5password)&tunnel_id=(tunnelid)'
+wget -O - 'https://ipv4.tunnelbroker.net/ipv4_end.php?ipv4b=AUTO&user_id=(userid)&pass=(md5password)&tunnel_id=(tunnelid)'
 ip tunnel add he-ipv6 mode sit remote (remotev4) local $WANIP ttl 255
 ip link set he-ipv6 up
 ip -6 addr add (localv6) dev he-ipv6
@@ -49,9 +49,9 @@ radvd -C /tmp/radvd.conf
 
 This image shows where to find some of the information in your tunnelbroker.net page:
 
-[<img class="aligncenter size-medium wp-image-183" title="tunnel details" src="/blog/uploads/2012/06/tunneldetails-300x249.png" alt="" width="300" height="249" srcset="/blog/uploads/2012/06/tunneldetails-300x249.png 300w, /blog/uploads/2012/06/tunneldetails.png 592w" sizes="(max-width: 300px) 100vw, 300px" />][4]
+![Tunnelbroker.net configuration page][4]
 
-The setup script needs to be saved, as a custom startup script, in the Administration -) Commands section of the DD-WRT web interface.
+The setup script needs to be saved, as a custom startup script, in the Administration -> Commands section of the DD-WRT web interface.
 
 I had also enabled [radvd][5] in the DD-WRT web interface to advertise the gateway to the wider IPv6 world on my LAN, but for me it failed to start on boot, so I added the `radvd -C /tmp/radvd.conf` line to make sure it starts after the tunnel is configured. The configuration file used for `radvd` is below, replace `(routedv6)` with your routed IPv6 /64 allocation, including the /64, and paste it into the box for `radvd` config in the DD-WRT web interface:
 
@@ -71,9 +71,9 @@ This setup means that on the other computers on the LAN (all Macs), I can set &#
 
 <!--more-->We are used to having devices on a home network behind a home router, plugged into the DSL or Cable modem. The router normally does NAT to allow all the computers on the LAN to use a single IPv4 address that&#8217;s assigned by our ISP, and includes a simple firewall. Devices on the LAN have private IPs (e.g. in the 192.168.0.0/16 range) and are by default not reachable from the wider Internet, unless you specifically forward ports on your router to them. However with the advent of IPv6 this changes somewhat. As I mentioned above, with IPv6 connectivity comes a /64 block of routable IPv6 addresses to assign to devices on the LAN &#8211; each of these is fully reachable from the outside Internet. And if you&#8217;ve set up the system hosting the tunnel endpoint as an IPv6 router, it will happily send packets between anyone on the Internet and devices on your LAN. This is generally a Bad Thing, as we might be running all kinds of services like file sharing or VNC on our home systems that we don&#8217;t want (or need) exposed to the outside world. What we need is a firewall which works without NAT, allowing each device to have its own routable IPv6 address while protecting it from intrusion.
 
-There are two options; either run a firewall on each machine on the LAN individually, or only run a firewall on the gateway and filter traffic at the ingress point to the LAN. I went with the latter option, since it only requires configuring one system instead of several, and I&#8217;m more familiar with the Linux `iptables` firewall system than the Mac OS X `pf` firewall.
+There are two options; either run a firewall on each machine on the LAN individually, or only run a firewall on the gateway and filter traffic at the ingress point to the LAN. I went with the latter option, since it only requires configuring one system instead of several, and I'm more familiar with the Linux `iptables` firewall system than the Mac OS X `pf` firewall.
 
-Unfortunately while DD-WRT has basic IPv6 support, it doesn&#8217;t include the necessary kernel modules or userspace tools for setting up an IPv6 firewall. I had to download the kernel modules and ip6tables packages, following instructions [here][7] and install them to the `/jffs` partition on the router with `ipkg` (you also have to enable JFFS2 support on the router for this to be possible).
+Unfortunately while DD-WRT has basic IPv6 support, it doesn't include the necessary kernel modules or userspace tools for setting up an IPv6 firewall. I had to download the kernel modules and ip6tables packages, following instructions [here][7] and install them to the `/jffs` partition on the router with `ipkg` (you also have to enable JFFS2 support on the router for this to be possible).
 
 Once all this is installed, another script is necessary to start and configure the firewall. I used the following:
 
@@ -159,7 +159,7 @@ ip6tables -A FORWARD -s 2000::/3 -d (lan address) -i $WAN_IF -p tcp -m multiport
 
 to allow traffic on certain ports through only to one machine on your LAN.
 
-I can now run an IPv6 port scan (for example [this one][8]) against any machine in my network and see only the necessary ports open, and traffic to all others being dropped. I can also check out various [cool IPv6 stuff][9] on the internet, get my IPv6 badge:[<img class="aligncenter" title="IPv6 Certification Badge for sigmaris" src="http://ipv6.he.net/certification/create_badge.php?pass_name=sigmaris&badge=3" alt="" width="229" height="137" />][10]
+I can now run an IPv6 port scan (for example [this one][8]) against any machine in my network and see only the necessary ports open, and traffic to all others being dropped. I can also check out various [cool IPv6 stuff][9] on the internet, get my IPv6 badge: ![IPv6 Certification Badge for sigmaris][10]
 
 &#8230;and be content that all my traffic to and from www.google.com and www.yahoo.com, among [others][11], is now going via IPv6 :).
 
@@ -172,5 +172,5 @@ I can now run an IPv6 port scan (for example [this one][8]) against any machine 
  [7]: http://www.dd-wrt.com/wiki/index.php/IPv6#ip6tables_for_K26_big_images "DD-WRT IPv6 Wiki page"
  [8]: http://ipv6.chappell-family.com/ipv6tcptest/ "IPv6 port scanner"
  [9]: http://www.sixxs.net/misc/coolstuff/ "Cool IPv6 Stuff"
- [10]: http://ipv6.he.net/certification/scoresheet.php?pass_name=sigmaris
+ [10]: http://ipv6.he.net/certification/create_badge.php?pass_name=sigmaris&badge=3
  [11]: http://www.worldipv6launch.org/participants/?q=1 "IPv6 Launch Day participants"
