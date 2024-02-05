@@ -6,6 +6,10 @@ date: 2024-01-06T13:20:35+00:00
 url: /2024/01/multipath-routing-ipsec-tunnel/
 categories:
   - linux
+comments:
+  host: sc.sigmaris.info
+  username: hughcb
+  id: 111710226200985892
 ---
 This weekend I figured out how to set up multipath routing with Oracle Cloud's Site-to-Site VPN. I have been using Oracle Cloud for a while as they have a generous "Always Free" plan for their 64-bit ARM virtual servers. To create a site-to-site connection between my home network and the Oracle Cloud network, I use their IPSec Site-to-Site VPN service. This type of VPN is made up of two IPSec tunnels, with different endpoints on the Oracle side, though strangely you can only specify one IP address for the endpoint on your side of the tunnels - Oracle calls this the Customer Premises Equipment or CPE. But in any case, the idea is you establish two tunnels to Oracle for redundancy, even though they both go to one endpoint on the "customer premises".
 
