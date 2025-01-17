@@ -23,12 +23,9 @@
     <a class="path" href="{{ .Site.BaseURL }}">[{{ .Site.Title }}]</a>
     <span class="caret"># _</span>
     <div class="right">
-      {{ range $i, $page := (where .Site.Pages "Section" "page") }}
-        {{ if not (eq $page.Title "Pages")}}
-          {{ if not (lt $i 2) }}|{{ end }}
-          <a class="path" href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
-        {{ end }}
-      {{ end }}
+      <a class="path" href="https://sc.sigmaris.info/@hughcb" rel="me">Mastodon</a>
+      |
+      <a class="path" href="https://github.com/sigmaris" rel="me">Github</a>
     </div>
   </div>
 </header>

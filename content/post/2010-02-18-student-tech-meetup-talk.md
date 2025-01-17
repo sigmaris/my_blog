@@ -13,4 +13,4 @@ tags:
   - stmu
 
 ---
-On Wednesday, I gave a talk at the Student Techmeetup here in Edinburgh on DS homebrew development. As promised, I&#8217;ve uploaded the slides from that talk as a PDF <a title="DS Homebrew presentation" href="/files/dspreso.pdf" target="_blank">here</a>, with links to a few tutorials and resources included in them, along with some notes.
+On Wednesday, I gave a talk at the Student Techmeetup here in Edinburgh on DS homebrew development. As promised, I've uploaded the slides from that talk as a PDF [here](/files/dspreso.pdf), with links to a few tutorials and resources included in them, along with some notes.
